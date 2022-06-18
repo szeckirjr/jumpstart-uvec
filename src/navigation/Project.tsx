@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { NextTask } from "../components/project/NextTask";
 import { SideSheet } from "../components/project/SideSheet";
-import { Steps } from "../components/project/Steps";
+import Steps  from "../components/project/Steps";
 
 const project = {
     title: "Gardenning",
