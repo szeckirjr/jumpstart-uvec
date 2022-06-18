@@ -45,10 +45,9 @@ const db = getFirestore(app);
 
 export const logInWithEmailAndPassword = async (email, password) => {
     try {
-        signInWithEmailAndPassword(auth, email, password)
-            .then(function (firebaseUser) {
-                return firebaseUser;
-            })
+        const signInuser = await signInWithEmailAndPassword(auth, email, password)    
+        return signInuser;
+            
     } catch (err) {
         console.error(err);
         return false;

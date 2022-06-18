@@ -1,8 +1,25 @@
-import { Button, Stack, TextField, Typography } from "@mui/material";
+import { Button, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { registerWithEmailAndPassword, logInWithEmailAndPassword } from "../api/firebase";
 
 export function LoginPage() {
   const navigate = useNavigate();
+
+  const [user, setUser] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = async(event: any) => {
+    event.preventDefault();
+    
+    try{ 
+      const loginUser = await logInWithEmailAndPassword(user, password);
+      console.log(loginUser);
+    }catch(e){
+      console.log(e);
+    }
+
+  }
 
   return (
     <Stack
@@ -13,21 +30,51 @@ export function LoginPage() {
       alignItems="center"
       justifyContent="center"
       py={3}
-      spacing={3}
+      spacing={6}
     >
-      <Typography variant="h2" fontWeight="bold">
-        Jumpstart
-      </Typography>
-      <TextField id="outlined-basic" label="Username" variant="outlined" />
-      <TextField
-        id="outlined-password-input"
-        label="Password"
-        type="password"
-        autoComplete="current-password"
-      />
-      <Button onClick={() => navigate("/dashboard")} variant="contained">
-        Login
-      </Button>
+      <Paper>
+        <form onSubmit={handleSubmit}>
+          <Grid container direction="column" spacing={2}>
+            <Grid item>
+              <TextField
+                type="username"
+                placeholder="Username"
+                fullWidth
+                name="username"
+                variant="outlined"
+                onChange={(event) =>
+                  setUser(event.target.value)
+                }
+                required
+                autoFocus
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                type="password"
+                placeholder="Password"
+                fullWidth
+                name="password"
+                variant="outlined"
+                onChange={(event) =>
+                  setPassword(event.target.value)
+                }
+                required
+              />
+            </Grid>
+            <Grid item>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                className="button-block"
+              >
+                Submit
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
+      </Paper>
     </Stack>
   );
 }
