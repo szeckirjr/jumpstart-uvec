@@ -29,7 +29,7 @@ export function ProjectPage() {
                     direction="column"
                 >
                     <Typography variant="h3" fontWeight="bold">
-                        Project
+                        {project.title}
                     </Typography>
                     <NextTask project={project!} />
                     <Steps steps={project.steps} />
