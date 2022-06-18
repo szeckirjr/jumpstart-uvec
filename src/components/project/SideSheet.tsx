@@ -28,8 +28,7 @@ export function SideSheet({ element }: { element: Step | Task }) {
         >
             <Box sx={{ m: 2 }}>
                 <Typography variant="h5" component="div">
-                    {"tasks" in element ? "Step" : "Task"} {element.id}:{" "}
-                    {element.title}
+                    {"tasks" in element ? "Step" : `Task ${element.id}`} {element.title}
                 </Typography>
             </Box>
             <Divider />
