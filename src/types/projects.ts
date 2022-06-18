@@ -7,6 +7,7 @@ export type Project = {
 export type Step = {
   title: String;
   tasks: Task[];
+  isCompleted: Boolean;
 };
 
 export type Task = {
