@@ -5,33 +5,62 @@ import {
     TextField,
     Typography,
     useMediaQuery,
+    Container,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { handleOpenAIAPI } from "../api/openai";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import { Logo } from "../components/Logo";
-import { getUserDataFromEmail } from "../api/firebase";
+import { getUserDataFromEmail, updateUserProjects } from "../api/firebase";
+import { Project, Step } from "../types/projects";
+import { ProjectCard } from "../components/ProjectCard";
 
 export function Dashboard() {
     const isMobile = useMediaQuery("(max-width:800px)");
     const navigate = useNavigate();
     const [prompt, setPrompt] = useState<string>("");
+    const [prevPrompt, setPrevPrompt] = useState<string>("");
     const [loading, setLoading] = useState<boolean | null>();
     const [response, setResponse] = useState<string | undefined>(undefined);
-    const [userData, setUserData] = useState<any>();
+    const [userData, setUserData] = useState<Project[]>();
+    const [userEmail, setUserEmail] = useState("");
 
     useEffect(() => {
         const user = localStorage.getItem("USER");
         if (!user) {
             navigate("/login");
         } else {
-            console.log("EMAIL", user);
-            getUserDataFromEmail("bob@gmail.com").then((data) => {
+            setUserEmail(user);
+            setLoading(true);
+            getUserDataFromEmail(user).then((data) => {
+                setLoading(false);
+                console.log("USER DATA", data);
                 setUserData(data);
             });
         }
     }, [navigate]);
+
+    useEffect(() => {
+        if (response) {
+            const validSteps = response
+                .split(/\n|\r/g)
+                .filter((step) => step && step.trim() !== "");
+            const steps: Step[] = validSteps.map((step, idx) => {
+                return {
+                    id: idx.toString(),
+                    title: step,
+                    isCompleted: false,
+                    tasks: [],
+                };
+            });
+            userData?.push({
+                title: prevPrompt,
+                description: "",
+                steps,
+            });
+            updateUserProjects(userEmail, userData);
+        }
+    }, [prevPrompt, response, userData, userEmail]);
 
     return (
         <Stack
@@ -63,20 +92,45 @@ export function Dashboard() {
                             prompt,
                             setPrompt,
                             setLoading,
-                            setResponse
+                            setResponse,
+                            setPrevPrompt
                         );
                     }
                 }}
             />
             <Button
                 onClick={() =>
-                    handleOpenAIAPI(prompt, setPrompt, setLoading, setResponse)
+                    handleOpenAIAPI(
+                        prompt,
+                        setPrompt,
+                        setLoading,
+                        setResponse,
+                        setPrevPrompt
+                    )
                 }
                 variant="outlined"
             >
                 Start Project
             </Button>
-            {loading === true ? (
+            <Container
+                style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "space-around",
+                    alignItems: "flex-start",
+                }}
+            >
+                {loading === true ? (
+                    <CircularProgress />
+                ) : (
+                    userData &&
+                    userData.length > 0 &&
+                    userData.map((project, idx) => (
+                        <ProjectCard key={idx} project={project} />
+                    ))
+                )}
+            </Container>
+            {/* {loading === true ? (
                 <CircularProgress />
             ) : (
                 <Stack>
@@ -90,7 +144,7 @@ export function Dashboard() {
                                     )
                             )}
                 </Stack>
-            )}
+            )} */}
             <Button
                 style={{
                     position: "absolute",

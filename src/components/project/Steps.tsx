@@ -12,57 +12,57 @@ const useStyles = makeStyles({
     },
 });
 
-const steps: Step[] = [
-    {
-        id: "1",
-        title: "Step 1",
-        tasks: [
-            {
-                id: "1",
-                title: "Task 1",
-                description: "Description 1",
-                isCompleted: false,
-                blockedBy: [],
-            },
-        ],
-        isCompleted: false,
-    },
-    {
-        id: "2",
-        title: "Step 2",
-        tasks: [
-            {
-                id: "1",
-                title: "Task 1",
-                description: "Description 1",
-                isCompleted: false,
-                blockedBy: [],
-            },
-        ],
-        isCompleted: false,
-    },
-    {
-        id: "3",
-        title: "Step 3",
-        tasks: [
-            {
-                id: "1",
-                title: "Task 1",
-                description: "Description 1",
-                isCompleted: false,
-                blockedBy: [],
-            },
-            {
-                id: "2",
-                title: "Task 2",
-                description: "Description 2",
-                isCompleted: false,
-                blockedBy: ["1.1"],
-            },
-        ],
-        isCompleted: false,
-    },
-];
+// const steps: Step[] = [
+//     {
+//         id: "1",
+//         title: "Step 1",
+//         tasks: [
+//             {
+//                 id: "1",
+//                 title: "Task 1",
+//                 description: "Description 1",
+//                 isCompleted: false,
+//                 blockedBy: [],
+//             },
+//         ],
+//         isCompleted: false,
+//     },
+//     {
+//         id: "2",
+//         title: "Step 2",
+//         tasks: [
+//             {
+//                 id: "1",
+//                 title: "Task 1",
+//                 description: "Description 1",
+//                 isCompleted: false,
+//                 blockedBy: [],
+//             },
+//         ],
+//         isCompleted: false,
+//     },
+//     {
+//         id: "3",
+//         title: "Step 3",
+//         tasks: [
+//             {
+//                 id: "1",
+//                 title: "Task 1",
+//                 description: "Description 1",
+//                 isCompleted: false,
+//                 blockedBy: [],
+//             },
+//             {
+//                 id: "2",
+//                 title: "Task 2",
+//                 description: "Description 2",
+//                 isCompleted: false,
+//                 blockedBy: ["1.1"],
+//             },
+//         ],
+//         isCompleted: false,
+//     },
+// ];
 
 function StepList({ step, idx }: { step: Step; idx: number }) {
     const classes = useStyles();
@@ -74,7 +74,7 @@ function StepList({ step, idx }: { step: Step; idx: number }) {
                     variant="h5"
                     fontWeight="bold"
                 >
-                    {idx + 1}. {step.title}
+                    {step.title}
                 </Typography>
                 {step.tasks.map((task, idx) => TaskList({ task, idx }))}
             </Stack>
@@ -90,7 +90,7 @@ function TaskList({ task, idx }: { task: Task; idx: number }) {
     );
 }
 
-function Steps() {
+function Steps({ steps }: { steps: Step[] }) {
     return (
         steps && (
             <Stack px={5} textAlign="left" direction="column">

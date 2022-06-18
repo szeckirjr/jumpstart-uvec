@@ -4,7 +4,8 @@ export async function handleOpenAIAPI(
     prompt: string,
     setPrompt: (val: string) => void,
     setLoading: (val: boolean) => void,
-    setResponse: (val: string) => void
+    setResponse: (val: string) => void,
+    setPrevPrompt: (val:string) => void,
 ) {
     console.log(process.env.REACT_APP_OPENAI_APIKEY);
     const configuration = new Configuration({
@@ -13,9 +14,10 @@ export async function handleOpenAIAPI(
     const openai = new OpenAIApi(configuration);
     if (prompt.trim() === "") return;
     setLoading(true);
+    setPrevPrompt(prompt);
     const tempPrompt = "Outline steps needed to " + prompt;
     setPrompt("");
-    const response = openai
+    openai
         .createCompletion({
             model: "text-davinci-002",
             prompt: tempPrompt,
@@ -38,5 +40,5 @@ export async function handleOpenAIAPI(
             setResponse("Sorry :( Could not get response form OpenAI API");
         });
 
-    return response;
+    return;
 }
