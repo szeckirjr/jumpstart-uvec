@@ -53,14 +53,41 @@ export function Dashboard() {
                     tasks: [],
                 };
             });
-            userData?.push({
-                title: prevPrompt,
-                description: "",
-                steps,
-            });
-            updateUserProjects(userEmail, userData);
+            if (userData) {
+                setUserData([
+                    ...userData,
+                    {
+                        title: prevPrompt,
+                        description: "",
+                        steps,
+                    },
+                ]);
+                updateUserProjects(userEmail, [
+                    ...userData,
+                    {
+                        title: prevPrompt,
+                        description: "",
+                        steps,
+                    },
+                ]);
+            } else {
+                setUserData([
+                    {
+                        title: prevPrompt,
+                        description: "",
+                        steps,
+                    },
+                ]);
+                updateUserProjects(userEmail, [
+                    {
+                        title: prevPrompt,
+                        description: "",
+                        steps,
+                    },
+                ]);
+            }
         }
-    }, [prevPrompt, response, userData, userEmail]);
+    }, [prevPrompt, response, userEmail]);
 
     return (
         <Stack

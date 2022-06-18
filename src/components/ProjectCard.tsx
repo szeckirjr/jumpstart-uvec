@@ -10,13 +10,7 @@ export function ProjectCard({ project }: { project: Project }) {
             to={"/project"}
             state={{ project }}
         >
-            <Card
-                variant="outlined"
-                style={{
-                    maxWidth: "300px",
-                    flexGrow: 1,
-                }}
-            >
+            <Card variant="outlined">
                 <CardContent>
                     <Typography variant="h5" component="div">
                         {project.title}
