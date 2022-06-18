@@ -33,10 +33,12 @@ function getProjects(): Project[] {
       description: "Garden some Roses",
       steps: [
         {
+          id: "1",
           title: "Ready Area",
           isCompleted: false,
           tasks: [
             {
+              id: "1",
               title: "Choose area",
               description: "Choose gooad patch of backyard",
               isCompleted: false,
@@ -45,16 +47,19 @@ function getProjects(): Project[] {
           ],
         },
         {
+          id: "2",
           title: "Ready Seeds",
           isCompleted: false,
           tasks: [
             {
+              id: "1",
               title: "Choose Variety",
               description: "Choose vareity of roses",
               isCompleted: false,
               blockedBy: [],
             },
             {
+              id: "2",
               title: "Buy Seeds",
               description: "Buy the chosen variety",
               isCompleted: false,
@@ -69,10 +74,12 @@ function getProjects(): Project[] {
       description: "Writing a Fantasy Novel",
       steps: [
         {
+          id: "1",
           title: "Reasearch Some Books",
           isCompleted: true,
           tasks: [
             {
+              id: "1",
               title: "Choose Books to Read",
               description: "Choose some good books for inspiration",
               isCompleted: true,
@@ -81,20 +88,23 @@ function getProjects(): Project[] {
           ],
         },
         {
+          id: "2",
           title: "Formulate the World",
           isCompleted:false,
           tasks: [
             {
+              id: "1",
               title: "Think of an idea",
               description: "Think of a focus point of the story",
               isCompleted: true,
               blockedBy: [],
             },
             {
+              id: "2",
               title: "Start on the world",
               description: "Think of the world arounf that focus point",
               isCompleted: false,
-              blockedBy: [],
+              blockedBy: ["1.1"],
             },
           ],
         },
