@@ -1,6 +1,7 @@
-import { Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { NextTask } from "../components/project/NextTask";
+import { SideSheet } from "../components/project/SideSheet";
 import { Steps } from "../components/project/Steps";
 
 
@@ -51,13 +52,16 @@ export function Project() {
 
     return (
         <>
+        <Box sx={{ display: 'flex' }}>
             <Stack py={5} textAlign="center" width="100%" direction="column">
                 <Typography variant="h3" fontWeight="bold">
                     Project {id}
                 </Typography>
-            </Stack>
             <NextTask project={project}/>
             <Steps />
+            </Stack>
+            <SideSheet element={project.steps[0]} />
+        </Box>
         </>
     );
 }
