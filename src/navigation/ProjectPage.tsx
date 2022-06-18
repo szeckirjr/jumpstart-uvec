@@ -1,5 +1,5 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
-import { useEffect } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { NextTask } from "../components/project/NextTask";
 import { SideSheet } from "../components/project/SideSheet";
@@ -11,6 +11,7 @@ export function ProjectPage() {
     const location = useLocation();
     //@ts-ignore
     const { project } = location.state as Project;
+    const [sideSheetElement, setSideSheetElement] = useState(project!.steps[0]);
 
     // useEffect(() => {
     //     console.log(!project);
@@ -30,12 +31,15 @@ export function ProjectPage() {
                     spacing={4}
                 >
                     <Typography variant="h3" fontWeight="bold">
-                        Project
+                        {project.title}
                     </Typography>
                     <NextTask project={project!} />
-                    <Steps steps={project.steps} />
+                    <Steps
+                        steps={project.steps}
+                        setSideSheetElement={setSideSheetElement}
+                    />
                 </Stack>
-                <SideSheet element={project!.steps[0]} />
+                <SideSheet element={sideSheetElement} />
                 <Button
                     onClick={() => navigate("/")}
                     color="success"

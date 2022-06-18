@@ -36,7 +36,7 @@ function getNextTasks(project: Project) {
             step.tasks
                 .filter((task) => !task.isCompleted)
                 .map((task) => ({
-                    id: `${step.id}.${task.id}`,
+                    id: `${parseInt(step.id)+1}.${task.id}`,
                     title: task.title,
                 }))
         )
