@@ -39,7 +39,7 @@ export function ProjectPage() {
                         setSideSheetElement={setSideSheetElement}
                     />
                 </Stack>
-                <SideSheet element={sideSheetElement} />
+                <SideSheet project={project} element={sideSheetElement} />
                 <Button
                     onClick={() => navigate("/")}
                     color="success"
