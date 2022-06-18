@@ -85,7 +85,7 @@ export const getUserDataFromEmail = async (email) => {
     const myDocRef = doc(db, "users", email);
     const myDoc = await getDoc(myDocRef);
     if (myDoc.exists()) {
-        // console.log(myDoc.data().projects
+        // console.log(myDoc.data().projects);
         return(myDoc.data().projects);
     } else {
         return false;
