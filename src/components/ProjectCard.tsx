@@ -1,16 +1,43 @@
-import { Card, CardContent, Typography } from "@mui/material";
+import { Card, CardContent, Container, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import { Link } from "react-router-dom";
 import { Project } from "../types/projects";
 
+const useStyles = makeStyles({
+    card: {
+        borderColor: "black",
+        border: "solid 1px black",
+        padding: "15px",
+        borderRadius: "10px",
+        minWidth: "200px",
+        maxWidth: "400px",
+        flexGrow: "1",
+    },
+});
+
 export function ProjectCard({ project }: { project: Project }) {
     console.log("PROJECT CARD", project.title);
+    const styles = useStyles();
     return (
         <Link
             style={{ textDecoration: "none" }}
             to={"/project"}
             state={{ project }}
         >
-            <Card variant="outlined">
+            <Container className={styles.card}>
+                <Typography variant="h5" fontWeight="bold" color="black">
+                    {project.title}
+                </Typography>
+                <Typography variant="h6" color="gray">
+                    {getNextTask(project)}
+                </Typography>
+            </Container>
+            {/* <Card
+                variant="outlined"
+                style={{
+                    flexGrow: 1,
+                }}
+            >
                 <CardContent>
                     <Typography variant="h5" component="div">
                         {project.title}
@@ -23,7 +50,7 @@ export function ProjectCard({ project }: { project: Project }) {
                         {getNextTask(project)}
                     </Typography>
                 </CardContent>
-            </Card>
+            </Card> */}
         </Link>
     );
 }

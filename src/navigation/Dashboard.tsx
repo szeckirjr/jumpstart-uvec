@@ -143,8 +143,9 @@ export function Dashboard() {
                 style={{
                     display: "flex",
                     flexWrap: "wrap",
-                    justifyContent: "space-around",
-                    alignItems: "flex-start",
+                    justifyContent: "space-evenly",
+                    alignItems: "stretch",
+                    gap: "10px",
                 }}
             >
                 {loading === true ? (
