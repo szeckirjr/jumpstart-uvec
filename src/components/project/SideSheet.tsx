@@ -1,19 +1,24 @@
+import { AddTask } from "@mui/icons-material";
 import {
     Drawer,
     List,
     ListItem,
-    ListItemButton,
     ListItemText,
     Divider,
     Box,
     Typography,
     Stack,
+    ListItemButton,
+    Button,
     Chip,
 } from "@mui/material";
-import { Step, Task } from "../../types/projects";
+import { useState } from "react";
+import { getUserDataFromEmail, updateUserProjects } from "../../api/firebase";
+import { Project, Step, Task } from "../../types/projects";
 
-export function SideSheet({ element }: { element: Step | Task }) {
+export function SideSheet({ element, project }: { element: Step | Task, project: Project }) {
     const drawerWidth = "33%";
+    const [_, refresh] = useState(true);
     return (
         <Drawer
             sx={{
@@ -64,6 +69,7 @@ export function SideSheet({ element }: { element: Step | Task }) {
                     <ListItem>
                         <Stack direction="column">
                             <ListItemText primary={"Tasks:"} />
+                            <Button onClick={() => addTask(project, element, refresh)}>Add</Button>
                             <List sx={{ mx: 2 }}>
                                 {element.tasks.map((task) => (
                                     <ListItemText
@@ -79,4 +85,21 @@ export function SideSheet({ element }: { element: Step | Task }) {
             </List>
         </Drawer>
     );
+}
+
+async function addTask(project:Project, element:Step, refresh:Function) {
+    const email=localStorage.getItem("USER");
+    const allProjects = await getUserDataFromEmail(email);
+    if(!allProjects){
+        console.log("failied to get Projects");
+        return;
+    }
+    console.log(element.id)
+    const index = allProjects.findIndex((p: Project) => p.title === project.title);
+    project.steps[Number(element.id)].tasks.push({id:`${project.steps[Number(element.id)].tasks.length+1}`, title:"New Task", description: "", isCompleted:false, blockedBy:[]})
+    allProjects[index] = project;
+
+    console.log(allProjects)
+    updateUserProjects(email, allProjects);
+    refresh((o:Boolean)=>!o);
 }
