@@ -63,14 +63,14 @@ export function SideSheet({ element }: { element: Step | Task }) {
                 {"tasks" in element ? (
                     <ListItem>
                         <Stack direction="column">
-                        <ListItemText primary={"Tasks:"} />
-                        <List sx={{ mx: 2 }}>
-                            {element.tasks.map((task) => (
-                                <ListItemText
-                                    primary={`Task ${task.id}: ${task.title}`}
-                                />
-                            ))}
-                        </List>
+                            <ListItemText primary={"Tasks:"} />
+                            <List sx={{ mx: 2 }}>
+                                {element.tasks.map((task) => (
+                                    <ListItemText
+                                        primary={`Task ${task.id}: ${task.title}`}
+                                    />
+                                ))}
+                            </List>
                         </Stack>
                     </ListItem>
                 ) : (
