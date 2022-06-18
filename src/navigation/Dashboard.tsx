@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { handleOpenAIAPI } from "../api/openai";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import { Logo } from "../components/Logo";
+import { getUserDataFromEmail } from "../api/firebase";
 
 export function Dashboard() {
     const isMobile = useMediaQuery("(max-width:800px)");
@@ -18,13 +19,19 @@ export function Dashboard() {
     const [prompt, setPrompt] = useState<string>("");
     const [loading, setLoading] = useState<boolean | null>();
     const [response, setResponse] = useState<string | undefined>(undefined);
+    const [userData, setUserData] = useState<any>();
 
     useEffect(() => {
         const user = localStorage.getItem("USER");
         if (!user) {
             navigate("/login");
+        } else {
+            console.log("EMAIL", user);
+            getUserDataFromEmail("bob@gmail.com").then((data) => {
+                setUserData(data);
+            });
         }
-    }, []);
+    }, [navigate]);
 
     return (
         <Stack
