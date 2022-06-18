@@ -2,7 +2,7 @@ import { Button, Grid, Paper, Stack, TextField, Typography } from "@mui/material
 import { Box, padding } from "@mui/system";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { registerWithEmailAndPassword, logInWithEmailAndPassword, getUserDataFromEmail } from "../api/firebase";
+import { registerWithEmailAndPassword, logInWithEmailAndPassword, getUserDataFromEmail, updateStepforProject } from "../api/firebase";
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -22,7 +22,8 @@ export function LoginPage() {
     event.preventDefault();
     const loginUser = await logInWithEmailAndPassword(user, password);
     if (loginUser) {
-      localStorage.setItem('USER', JSON.stringify(loginUser.user.email));
+      const email = JSON.stringify(loginUser.user.email).replaceAll("\"", "");
+      localStorage.setItem('USER', email);
       navigate('/');
       console.log(loginUser);
     } else {
@@ -45,7 +46,7 @@ export function LoginPage() {
         border: "0.5px solid black"
       }}>
         <Box sx={{ p: 3 }}>
-          <Typography sx={{fontWeight: 600}}>Login</Typography>
+          <Typography sx={{ fontWeight: 600 }}>Login</Typography>
         </Box>
         <form onSubmit={handleSubmit}>
           <Grid container direction="column" spacing={2}>
@@ -94,7 +95,7 @@ export function LoginPage() {
             </Grid>
           </Grid>
         </form>
-        <Button onClick={getUserDataFromEmail}>Test</Button>
+       
       </Paper>
     </Stack>
   );

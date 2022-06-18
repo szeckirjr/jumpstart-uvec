@@ -24,6 +24,8 @@ import {
     doc,
     DocumentData,
     getDoc,
+    setDoc,
+    updateDoc,
 } from "firebase/firestore";
 import "firebase/auth";
 import 'firebase/compat/auth';
@@ -92,15 +94,13 @@ export const getUserDataFromEmail = async (email) => {
     }
 }
 
-// export const updateProjectData = async (email, data) => {
+// export const updateStepforProject = async (email, projectsData) => {
 
 //     const myDocRef = doc(db, "users", email);
-//     const myDoc = await getDoc(myDocRef);
-//     if (myDoc.exists()) {
-//         return m
-//     } else {
-//         return false;
-//     }
+//     const setData = await updateDoc(myDocRef,{
+//         projects: projectsData
+//     });
+//     console.log(setData);
 // }
 
 
