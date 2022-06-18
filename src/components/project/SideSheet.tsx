@@ -8,6 +8,7 @@ import {
     Box,
     Typography,
     Stack,
+    Chip,
 } from "@mui/material";
 import { Step, Task } from "../../types/projects";
 
@@ -28,14 +29,12 @@ export function SideSheet({ element }: { element: Step | Task }) {
         >
             <Box sx={{ m: 2 }}>
                 <Typography variant="h5" component="div">
-                    {"tasks" in element ? "Step" : `Task ${element.id}`} {element.title}
+                    {"tasks" in element ? "Step" : `Task ${element.id}`}{" "}
+                    {element.title}
                 </Typography>
             </Box>
             <Divider />
             <List>
-                <ListItem>
-                    <ListItemText primary={`ID: ${element.id}`} />
-                </ListItem>
                 {"tasks" in element ? (
                     ""
                 ) : (
@@ -46,9 +45,11 @@ export function SideSheet({ element }: { element: Step | Task }) {
                     </ListItem>
                 )}
                 <ListItem>
-                    <ListItemText
-                        primary={`Completed: ${element.isCompleted}`}
-                    />
+                    {element.isCompleted ? (
+                        <Chip label="Completed" color="success" />
+                    ) : (
+                        <Chip label="Not Completed" color="error" />
+                    )}
                 </ListItem>
                 {"tasks" in element ? (
                     ""

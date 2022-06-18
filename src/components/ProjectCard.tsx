@@ -1,4 +1,4 @@
-import { Card, CardContent, Container, Typography } from "@mui/material";
+import { Card, CardContent, Container, Stack, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { Link } from "react-router-dom";
 import { Project } from "../types/projects";
@@ -28,9 +28,11 @@ export function ProjectCard({ project }: { project: Project }) {
                 <Typography variant="h5" fontWeight="bold" color="black">
                     {project.title}
                 </Typography>
-                <Typography variant="h6" color="gray">
-                    {getNextTask(project)}
-                </Typography>
+                <Stack direction="row">
+                    <Typography variant="h6" color="gray">
+                        {getNextTask(project)}
+                    </Typography>
+                </Stack>
             </Container>
             {/* <Card
                 variant="outlined"
@@ -57,11 +59,22 @@ export function ProjectCard({ project }: { project: Project }) {
 
 function getNextTask(project: Project) {
     const uncompletedSteps = project.steps.filter((step) => !step.isCompleted);
+    // console.log("UNDONE", uncompletedSteps);
+    var task = undefined;
     uncompletedSteps.forEach((step) => {
+        console.log(
+            "WHAT",
+            step.tasks.some((task) => !task.isCompleted)
+        );
         if (step.tasks.some((task) => !task.isCompleted)) {
-            return step.tasks.find((task) => !task.isCompleted);
+            console.log(
+                "YEP!!",
+                step.tasks.find((task) => !task.isCompleted)?.title
+            );
+            task = step.tasks.find((task) => !task.isCompleted)?.title;
+            // return step.tasks.find((task) => !task.isCompleted)?.title;
         }
     });
-    return "No tasks left";
+    return task ?? "No tasks left";
     // return uncompletedSteps[0].tasks.filter((task) => !task.isCompleted)[0].title;
 }
