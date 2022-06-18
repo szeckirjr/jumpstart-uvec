@@ -10,6 +10,13 @@ const useStyles = makeStyles({
             textDecoration: "underline",
         },
     },
+    task: {
+        cursor: "pointer",
+        color: "black",
+        "&:hover": {
+            textDecoration: "underline",
+        },
+    },
 });
 
 // const steps: Step[] = [
@@ -77,15 +84,17 @@ function StepList({ steps, step, idx, setSideSheetElement }: { steps:Step[], ste
                 >
                     {step.title}
                 </Typography>
-                {step.tasks.map((task, idx) => TaskList({ task, idx }))}
+                {step.tasks.map((task, idx) => TaskList({ tasks: step.tasks, task, idx, setSideSheetElement }))}
             </Stack>
         </ListItem>
     );
 }
 
-function TaskList({ task, idx }: { task: Task; idx: number }) {
+function TaskList({ tasks, task, idx, setSideSheetElement }: { tasks:Task[], task: Task; idx: number, setSideSheetElement:Function }) {
+    const classes = useStyles();
     return (
-        <Typography variant="h6" marginLeft={3}>
+        <Typography 
+        className={classes.step} variant="h6" marginLeft={3} onClick={()=>setSideSheetElement(tasks[idx])}>
             {idx + 1}. {task.title}
         </Typography>
     );
