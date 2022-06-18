@@ -20,20 +20,19 @@ import {
     addDoc,
 } from "firebase/firestore";
 
-
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: "AIzaSyDbLWA-Dn5H6Lczu3_tdR3hByVAtZ3t_jw",
+    apiKey: process.env.REACT_APP_FIREBASE_APIKEY,
     authDomain: "jumpstart-uvec.firebaseapp.com",
     projectId: "jumpstart-uvec",
     storageBucket: "jumpstart-uvec.appspot.com",
     messagingSenderId: "328890105206",
     appId: "1:328890105206:web:789b4fc98d9e9fe1d74e57",
-    measurementId: "G-6P83WW3NJL"
+    measurementId: "G-6P83WW3NJL",
 };
 
 // Initialize Firebase
@@ -45,9 +44,12 @@ const db = getFirestore(app);
 
 export const logInWithEmailAndPassword = async (email, password) => {
     try {
-        const signInuser = await signInWithEmailAndPassword(auth, email, password)    
+        const signInuser = await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
         return signInuser;
-            
     } catch (err) {
         console.error(err);
         return false;
@@ -74,5 +76,4 @@ export const registerWithEmailAndPassword = async (name, email, password) => {
 
 export const logout = () => {
     signOut(auth);
-
 };
