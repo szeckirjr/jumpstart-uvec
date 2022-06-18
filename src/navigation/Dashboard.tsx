@@ -9,6 +9,9 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { handleOpenAIAPI } from "../api/openai";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import { Logo } from "../components/Logo";
+import { getUserDataFromEmail } from "../api/firebase";
 
 export function Dashboard() {
     const isMobile = useMediaQuery("(max-width:800px)");
@@ -16,13 +19,19 @@ export function Dashboard() {
     const [prompt, setPrompt] = useState<string>("");
     const [loading, setLoading] = useState<boolean | null>();
     const [response, setResponse] = useState<string | undefined>(undefined);
+    const [userData, setUserData] = useState<any>();
 
-    useEffect(()=>{
-        const user = localStorage.getItem('USER');
-        if(!user){
-            navigate('/login');
+    useEffect(() => {
+        const user = localStorage.getItem("USER");
+        if (!user) {
+            navigate("/login");
+        } else {
+            console.log("EMAIL", user);
+            getUserDataFromEmail("bob@gmail.com").then((data) => {
+                setUserData(data);
+            });
         }
-    },[]);
+    }, [navigate]);
 
     return (
         <Stack
@@ -33,9 +42,8 @@ export function Dashboard() {
             direction="column"
             spacing={4}
         >
-            <Typography variant="h2" fontWeight="bold">
-                Jumpstart
-            </Typography>
+            <Logo size="lg" />
+
             <TextField
                 value={prompt}
                 style={{
@@ -64,6 +72,7 @@ export function Dashboard() {
                 onClick={() =>
                     handleOpenAIAPI(prompt, setPrompt, setLoading, setResponse)
                 }
+                variant="outlined"
             >
                 Start Project
             </Button>
@@ -82,6 +91,21 @@ export function Dashboard() {
                             )}
                 </Stack>
             )}
+            <Button
+                style={{
+                    position: "absolute",
+                    right: 10,
+                    top: 0,
+                }}
+                color="error"
+                variant="outlined"
+                onClick={() => {
+                    window.localStorage.removeItem("USER");
+                    navigate("/login");
+                }}
+            >
+                Logout
+            </Button>
         </Stack>
     );
 }
