@@ -11,14 +11,22 @@ import {
     ListItemButton,
     Button,
     Chip,
+    TextField,
 } from "@mui/material";
 import { useState } from "react";
 import { getUserDataFromEmail, updateUserProjects } from "../../api/firebase";
 import { Project, Step, Task } from "../../types/projects";
 
-export function SideSheet({ element, project }: { element: Step | Task, project: Project }) {
+export function SideSheet({
+    element,
+    project,
+}: {
+    element: Step | Task;
+    project: Project;
+}) {
     const drawerWidth = "33%";
     const [_, refresh] = useState(true);
+    const [taskName, setTaskName] = useState("");
     return (
         <Drawer
             sx={{
@@ -69,7 +77,26 @@ export function SideSheet({ element, project }: { element: Step | Task, project:
                     <ListItem>
                         <Stack direction="column">
                             <ListItemText primary={"Tasks:"} />
-                            <Button onClick={() => addTask(project, element, refresh)}>Add</Button>
+                            <TextField
+                                id="filled-basic"
+                                label="Enter task"
+                                variant="filled"
+                                value={taskName}
+                                onChange={(e) => setTaskName(e.target.value)}
+                            />
+                            <Button
+                                onClick={() => {
+                                    addTask(
+                                        project,
+                                        element,
+                                        refresh,
+                                        taskName
+                                    );
+                                    setTaskName("");
+                                }}
+                            >
+                                Add
+                            </Button>
                             <List sx={{ mx: 2 }}>
                                 {element.tasks.map((task) => (
                                     <ListItemText
@@ -87,19 +114,32 @@ export function SideSheet({ element, project }: { element: Step | Task, project:
     );
 }
 
-async function addTask(project:Project, element:Step, refresh:Function) {
-    const email=localStorage.getItem("USER");
+async function addTask(
+    project: Project,
+    element: Step,
+    refresh: Function,
+    title: String
+) {
+    const email = localStorage.getItem("USER");
     const allProjects = await getUserDataFromEmail(email);
-    if(!allProjects){
+    if (!allProjects) {
         console.log("failied to get Projects");
         return;
     }
-    console.log(element.id)
-    const index = allProjects.findIndex((p: Project) => p.title === project.title);
-    project.steps[Number(element.id)].tasks.push({id:`${project.steps[Number(element.id)].tasks.length+1}`, title:"New Task", description: "", isCompleted:false, blockedBy:[]})
+    console.log(element.id);
+    const index = allProjects.findIndex(
+        (p: Project) => p.title === project.title
+    );
+    project.steps[Number(element.id)].tasks.push({
+        id: `${project.steps[Number(element.id)].tasks.length + 1}`,
+        title: title,
+        description: "",
+        isCompleted: false,
+        blockedBy: [],
+    });
     allProjects[index] = project;
 
-    console.log(allProjects)
+    console.log(allProjects);
     updateUserProjects(email, allProjects);
-    refresh((o:Boolean)=>!o);
+    refresh((o: Boolean) => !o);
 }
