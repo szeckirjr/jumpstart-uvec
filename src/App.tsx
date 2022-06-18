@@ -1,8 +1,17 @@
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
-import { Landing } from "./navigation/Landing";
+import { Dashboard } from "./navigation/Dashboard";
+import { LoginPage } from "./navigation/LoginPage";
 
 function App() {
-  return <Landing />;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
