@@ -4,11 +4,12 @@ import { Dashboard } from "./navigation/Dashboard";
 import { LoginPage } from "./navigation/LoginPage";
 
 function App() {
+
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<LoginPage />} />
-                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/" element={<Dashboard />} />
             </Routes>
         </BrowserRouter>
     );

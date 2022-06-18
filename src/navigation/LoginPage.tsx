@@ -1,5 +1,5 @@
 import { Button, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerWithEmailAndPassword, logInWithEmailAndPassword } from "../api/firebase";
 
@@ -9,13 +9,23 @@ export function LoginPage() {
   const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = async(event: any) => {
+  useEffect(()=>{
+    const user = localStorage.getItem('USER');
+    if(user){
+        navigate('/');
+    }
+  },[]);
+
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
-    
-    try{ 
+    try {
       const loginUser = await logInWithEmailAndPassword(user, password);
-      console.log(loginUser);
-    }catch(e){
+      if (loginUser) {
+        localStorage.setItem('USER', JSON.stringify(loginUser.user.email));
+        navigate('/');
+        console.log(loginUser);
+      }
+    } catch (e) {
       console.log(e);
     }
 

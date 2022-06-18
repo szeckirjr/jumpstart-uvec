@@ -6,14 +6,23 @@ import {
     Typography,
     useMediaQuery,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { handleOpenAIAPI } from "../api/openai";
 
 export function Dashboard() {
     const isMobile = useMediaQuery("(max-width:800px)");
+    const navigate = useNavigate();
     const [prompt, setPrompt] = useState<string>("");
     const [loading, setLoading] = useState<boolean | null>();
     const [response, setResponse] = useState<string | undefined>(undefined);
+
+    useEffect(()=>{
+        const user = localStorage.getItem('USER');
+        if(!user){
+            navigate('/login');
+        }
+    },[]);
 
     return (
         <Stack
