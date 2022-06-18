@@ -11,6 +11,11 @@ import { useNavigate } from "react-router-dom";
 import { logInWithEmailAndPassword } from "../api/firebase";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import { Logo } from "../components/Logo";
+import {
+    registerWithEmailAndPassword,
+    logInWithEmailAndPassword,
+    getUserDataFromEmail,
+} from "../api/firebase";
 
 export function LoginPage() {
     const navigate = useNavigate();
