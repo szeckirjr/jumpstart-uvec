@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { logInWithEmailAndPassword } from "../api/firebase";
 import { Logo } from "../components/Logo";
+import { Project } from "../types/projects";
 
 export function LoginPage() {
     const navigate = useNavigate();
