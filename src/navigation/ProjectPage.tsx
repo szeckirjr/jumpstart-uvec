@@ -35,7 +35,7 @@ export function ProjectPage() {
                     </Typography>
                     <NextTask project={project!} />
                     <Steps
-                        steps={project.steps}
+                        project={project}
                         setSideSheetElement={setSideSheetElement}
                     />
                 </Stack>

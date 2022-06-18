@@ -1,6 +1,6 @@
-import { List, ListItem, Stack, Typography } from "@mui/material";
+import { Button, List, ListItem, Stack, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { Step, Task } from "../../types/projects";
+import { Project, Step, Task } from "../../types/projects";
 
 const useStyles = makeStyles({
     step: {
@@ -71,7 +71,17 @@ const useStyles = makeStyles({
 //     },
 // ];
 
-function StepList({ steps, step, idx, setSideSheetElement }: { steps:Step[], step: Step; idx: number, setSideSheetElement: Function }) {
+function StepList({
+    steps,
+    step,
+    idx,
+    setSideSheetElement,
+}: {
+    steps: Step[];
+    step: Step;
+    idx: number;
+    setSideSheetElement: Function;
+}) {
     const classes = useStyles();
     return (
         <ListItem>
@@ -80,34 +90,87 @@ function StepList({ steps, step, idx, setSideSheetElement }: { steps:Step[], ste
                     className={classes.step}
                     variant="h5"
                     fontWeight="bold"
-                    onClick={()=>setSideSheetElement(steps[idx])}
+                    onClick={() => setSideSheetElement(steps[idx])}
                 >
                     {step.title}
                 </Typography>
-                {step.tasks.map((task, idx) => TaskList({ tasks: step.tasks, task, idx, setSideSheetElement }))}
+                {step.tasks.map((task, idx) =>
+                    TaskList({
+                        tasks: step.tasks,
+                        task,
+                        idx,
+                        setSideSheetElement,
+                    })
+                )}
             </Stack>
         </ListItem>
     );
 }
 
-function TaskList({ tasks, task, idx, setSideSheetElement }: { tasks:Task[], task: Task; idx: number, setSideSheetElement:Function }) {
+function TaskList({
+    tasks,
+    task,
+    idx,
+    setSideSheetElement,
+}: {
+    tasks: Task[];
+    task: Task;
+    idx: number;
+    setSideSheetElement: Function;
+}) {
     const classes = useStyles();
     return (
-        <Typography 
-        className={classes.step} variant="h6" marginLeft={3} onClick={()=>setSideSheetElement(tasks[idx])}>
+        <Typography
+            className={classes.step}
+            variant="h6"
+            marginLeft={3}
+            onClick={() => setSideSheetElement(tasks[idx])}
+        >
             {idx + 1}. {task.title}
         </Typography>
     );
 }
 
-function Steps({ steps, setSideSheetElement }: { steps: Step[], setSideSheetElement:Function }) {
+function Steps({
+    project,
+    setSideSheetElement,
+}: {
+    project: Project;
+    setSideSheetElement: Function;
+}) {
+    const { steps } = project;
+    console.log(steps);
     return (
-        steps && (
+        project && (
             <Stack px={5} textAlign="left" direction="column">
-                <Typography variant="h4" fontWeight="bold">
-                    Steps
-                </Typography>
-                <List>{steps.map((step, idx) => StepList({ steps, step, idx, setSideSheetElement }))}</List>
+                <Stack direction="row" width="100%">
+                    <Typography variant="h4" fontWeight="bold">
+                        Steps
+                    </Typography>
+                    <Button
+                        variant="contained"
+                        style={{
+                            marginLeft: "30px",
+                            fontSize: "15px",
+                        }}
+                        onClick={() => {
+                            steps.push({
+                                id: `${steps.length + 1}`,
+                                title: "New step",
+                                tasks: [],
+                                isCompleted: false,
+                            });
+                            project.steps = steps;
+                        }}
+                    >
+                        New Step
+                    </Button>
+                </Stack>
+                <List>
+                    {steps.map((step, idx) =>
+                        StepList({ steps, step, idx, setSideSheetElement })
+                    )}
+                </List>
             </Stack>
         )
     );

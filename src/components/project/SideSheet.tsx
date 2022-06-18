@@ -10,6 +10,7 @@ import {
     Stack,
     ListItemButton,
     Button,
+    Chip,
 } from "@mui/material";
 import { useState } from "react";
 import { getUserDataFromEmail, updateUserProjects } from "../../api/firebase";
@@ -33,14 +34,12 @@ export function SideSheet({ element, project }: { element: Step | Task, project:
         >
             <Box sx={{ m: 2 }}>
                 <Typography variant="h5" component="div">
-                    {"tasks" in element ? "Step" : `Task ${element.id}`} {element.title}
+                    {"tasks" in element ? "Step" : `Task ${element.id}`}{" "}
+                    {element.title}
                 </Typography>
             </Box>
             <Divider />
             <List>
-                <ListItem>
-                    <ListItemText primary={`ID: ${element.id}`} />
-                </ListItem>
                 {"tasks" in element ? (
                     ""
                 ) : (
@@ -51,9 +50,11 @@ export function SideSheet({ element, project }: { element: Step | Task, project:
                     </ListItem>
                 )}
                 <ListItem>
-                    <ListItemText
-                        primary={`Completed: ${element.isCompleted}`}
-                    />
+                    {element.isCompleted ? (
+                        <Chip label="Completed" color="success" />
+                    ) : (
+                        <Chip label="Not Completed" color="error" />
+                    )}
                 </ListItem>
                 {"tasks" in element ? (
                     ""
