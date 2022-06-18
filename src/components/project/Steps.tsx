@@ -64,7 +64,7 @@ const useStyles = makeStyles({
 //     },
 // ];
 
-function StepList({ step, idx }: { step: Step; idx: number }) {
+function StepList({ steps, step, idx, setSideSheetElement }: { steps:Step[], step: Step; idx: number, setSideSheetElement: Function }) {
     const classes = useStyles();
     return (
         <ListItem>
@@ -73,6 +73,7 @@ function StepList({ step, idx }: { step: Step; idx: number }) {
                     className={classes.step}
                     variant="h5"
                     fontWeight="bold"
+                    onClick={()=>setSideSheetElement(steps[idx])}
                 >
                     {step.title}
                 </Typography>
@@ -90,14 +91,14 @@ function TaskList({ task, idx }: { task: Task; idx: number }) {
     );
 }
 
-function Steps({ steps }: { steps: Step[] }) {
+function Steps({ steps, setSideSheetElement }: { steps: Step[], setSideSheetElement:Function }) {
     return (
         steps && (
             <Stack px={5} textAlign="left" direction="column">
                 <Typography variant="h4" fontWeight="bold">
                     Steps
                 </Typography>
-                <List>{steps.map((step, idx) => StepList({ step, idx }))}</List>
+                <List>{steps.map((step, idx) => StepList({ steps, step, idx, setSideSheetElement }))}</List>
             </Stack>
         )
     );
