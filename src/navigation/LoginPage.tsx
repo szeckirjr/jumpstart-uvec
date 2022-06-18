@@ -8,9 +8,10 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { logInWithEmailAndPassword } from "../api/firebase";
+import { logInWithEmailAndPassword, updateStepforProject } from "../api/firebase";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import { Logo } from "../components/Logo";
+import { Project } from "../types/projects";
 
 export function LoginPage() {
   const navigate = useNavigate();
