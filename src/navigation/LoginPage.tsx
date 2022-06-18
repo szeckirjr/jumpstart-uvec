@@ -1,4 +1,5 @@
 import { Button, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Box, padding } from "@mui/system";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerWithEmailAndPassword, logInWithEmailAndPassword } from "../api/firebase";
@@ -8,27 +9,26 @@ export function LoginPage() {
 
   const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  useEffect(()=>{
+  useEffect(() => {
     const user = localStorage.getItem('USER');
-    if(user){
-        navigate('/');
+    if (user) {
+      navigate('/');
     }
-  },[]);
+  }, []);
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
-    try {
-      const loginUser = await logInWithEmailAndPassword(user, password);
-      if (loginUser) {
-        localStorage.setItem('USER', JSON.stringify(loginUser.user.email));
-        navigate('/');
-        console.log(loginUser);
-      }
-    } catch (e) {
-      console.log(e);
+    const loginUser = await logInWithEmailAndPassword(user, password);
+    if (loginUser) {
+      localStorage.setItem('USER', JSON.stringify(loginUser.user.email));
+      navigate('/');
+      console.log(loginUser);
+    } else {
+      setError('Invalid credentials');
+      event.target.reset();
     }
-
   }
 
   return (
@@ -39,10 +39,14 @@ export function LoginPage() {
       textAlign="center"
       alignItems="center"
       justifyContent="center"
-      py={3}
-      spacing={6}
     >
-      <Paper>
+      <Paper style={{
+        padding: "50px",
+        border: "0.5px solid black"
+      }}>
+        <Box sx={{ p: 3 }}>
+          <Typography sx={{fontWeight: 600}}>Login</Typography>
+        </Box>
         <form onSubmit={handleSubmit}>
           <Grid container direction="column" spacing={2}>
             <Grid item>
@@ -72,11 +76,17 @@ export function LoginPage() {
                 required
               />
             </Grid>
+            {error &&
+              <Typography>
+                {error}
+              </Typography>
+            }
             <Grid item>
               <Button
                 variant="contained"
                 color="primary"
                 type="submit"
+                fullWidth
                 className="button-block"
               >
                 Submit
