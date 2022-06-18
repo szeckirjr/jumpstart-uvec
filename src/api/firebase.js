@@ -10,16 +10,24 @@ import {
     sendPasswordResetEmail,
     signOut,
 } from "firebase/auth";
-
+// import { useFirestoreQuery } from "react-query-firebase/firestore";
 import {
     getFirestore,
     query,
-    getDocs,
     collection,
-    where,
+    limit,
     addDoc,
+    where,
+    orderBy,
+    onSnapshot,
+    QuerySnapshot,
+    doc,
+    DocumentData,
+    getDoc,
 } from "firebase/firestore";
-
+import "firebase/auth";
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -45,9 +53,9 @@ const db = getFirestore(app);
 
 export const logInWithEmailAndPassword = async (email, password) => {
     try {
-        const signInuser = await signInWithEmailAndPassword(auth, email, password)    
+        const signInuser = await signInWithEmailAndPassword(auth, email, password)
         return signInuser;
-            
+
     } catch (err) {
         console.error(err);
         return false;
@@ -71,6 +79,30 @@ export const registerWithEmailAndPassword = async (name, email, password) => {
         return false;
     }
 };
+
+export const getUserDataFromEmail = async (email) => {
+
+    const myDocRef = doc(db, "users", email);
+    const myDoc = await getDoc(myDocRef);
+    if (myDoc.exists()) {
+        // console.log(myDoc.data().projects
+        return(myDoc.data().projects);
+    } else {
+        return false;
+    }
+}
+
+// export const updateProjectData = async (email, data) => {
+
+//     const myDocRef = doc(db, "users", email);
+//     const myDoc = await getDoc(myDocRef);
+//     if (myDoc.exists()) {
+//         return m
+//     } else {
+//         return false;
+//     }
+// }
+
 
 export const logout = () => {
     signOut(auth);
