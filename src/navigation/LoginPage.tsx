@@ -1,20 +1,28 @@
-import { Button, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
-import { Box, padding } from "@mui/system";
+import {
+  Button,
+  Grid,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { registerWithEmailAndPassword, logInWithEmailAndPassword, getUserDataFromEmail, updateStepforProject } from "../api/firebase";
+import { logInWithEmailAndPassword } from "../api/firebase";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import { Logo } from "../components/Logo";
 
 export function LoginPage() {
   const navigate = useNavigate();
 
-  const [user, setUser] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [user, setUser] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const user = localStorage.getItem('USER');
+    const user = localStorage.getItem("USER");
     if (user) {
-      navigate('/');
+      navigate("/");
     }
   }, []);
 
@@ -23,14 +31,14 @@ export function LoginPage() {
     const loginUser = await logInWithEmailAndPassword(user, password);
     if (loginUser) {
       const email = JSON.stringify(loginUser.user.email).replaceAll("\"", "");
-      localStorage.setItem('USER', email);
-      navigate('/');
+      localStorage.setItem("USER", JSON.stringify(email));
+      navigate("/");
       console.log(loginUser);
     } else {
-      setError('Invalid credentials');
+      setError("Invalid credentials");
       event.target.reset();
     }
-  }
+  };
 
   return (
     <Stack
@@ -41,61 +49,56 @@ export function LoginPage() {
       alignItems="center"
       justifyContent="center"
     >
-      <Paper style={{
-        padding: "50px",
-        border: "0.5px solid black"
-      }}>
-        <Box sx={{ p: 3 }}>
-          <Typography sx={{ fontWeight: 600 }}>Login</Typography>
-        </Box>
-        <form onSubmit={handleSubmit}>
-          <Grid container direction="column" spacing={2}>
-            <Grid item>
-              <TextField
-                type="username"
-                placeholder="Username"
-                fullWidth
-                name="username"
-                variant="outlined"
-                onChange={(event) =>
-                  setUser(event.target.value)
-                }
-                required
-                autoFocus
-              />
+      <Paper elevation={5} style={{ padding: "50px" }}>
+        <Stack spacing={5}>
+          <Logo size="md" />
+          {/* <Box sx={{ p: 3 }}>
+          <Typography>Login</Typography>
+        </Box> */}
+          <form onSubmit={handleSubmit}>
+            <Grid container direction="column" spacing={2}>
+              <Grid item>
+                <TextField
+                  type="username"
+                  placeholder="Username"
+                  fullWidth
+                  name="username"
+                  variant="outlined"
+                  onChange={(event) =>
+                    setUser(event.target.value)
+                  }
+                  required
+                  autoFocus
+                />
+              </Grid>
+              <Grid item>
+                <TextField
+                  type="password"
+                  placeholder="Password"
+                  fullWidth
+                  name="password"
+                  variant="outlined"
+                  onChange={(event) =>
+                    setPassword(event.target.value)
+                  }
+                  required
+                />
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  fullWidth
+                  className="button-block"
+                >
+                  Submit
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item>
-              <TextField
-                type="password"
-                placeholder="Password"
-                fullWidth
-                name="password"
-                variant="outlined"
-                onChange={(event) =>
-                  setPassword(event.target.value)
-                }
-                required
-              />
-            </Grid>
-            {error &&
-              <Typography>
-                {error}
-              </Typography>
-            }
-            <Grid item>
-              <Button
-                variant="contained"
-                color="primary"
-                type="submit"
-                fullWidth
-                className="button-block"
-              >
-                Submit
-              </Button>
-            </Grid>
-          </Grid>
-        </form>
-       
+          </form>
+          {error && <Typography color="red">{error}</Typography>}
+        </Stack>
       </Paper>
     </Stack>
   );
