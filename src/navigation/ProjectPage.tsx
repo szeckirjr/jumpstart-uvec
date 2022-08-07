@@ -1,6 +1,7 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { getUser, getUserDataFromEmail } from "../api/firebase";
 import { NextTask } from "../components/project/NextTask";
 import { SideSheet } from "../components/project/SideSheet";
 import Steps from "../components/project/Steps";
@@ -9,6 +10,8 @@ import { Project } from "../types/projects";
 export function ProjectPage() {
     const navigate = useNavigate();
     const location = useLocation();
+    const [loading, setLoading] = useState<boolean | null>();
+    const [userData, setUserData] = useState<Project[]>();
     //@ts-ignore
     const { project } = location.state as Project;
     const [sideSheetElement, setSideSheetElement] = useState(project!.steps[0]);
@@ -19,6 +22,25 @@ export function ProjectPage() {
     //         navigate("/");
     //     }
     // }, [navigate, project]);
+
+    useEffect(() => {
+        const user = localStorage.getItem("USER");
+        if (!user) {
+            const user = getUser();
+            if(user){
+                localStorage.setItem("USER", user);
+            }else{
+                navigate("/login");
+            }
+        } else {
+            setLoading(true);
+            getUserDataFromEmail().then((data) => {
+                setLoading(false);
+                console.log("USER DATA", data);
+                setUserData(data);
+            });
+        }
+    }, [navigate]);
 
     return (
         <>

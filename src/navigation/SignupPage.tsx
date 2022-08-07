@@ -9,43 +9,39 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { createProjectMultiSteps, checkUserExists, getUserDataFromEmail, logInWithEmailAndPassword } from "../api/firebase";
+import { createProjectMultiSteps, logInWithEmailAndPassword, registerWithEmailAndPassword, auth } from "../api/firebase";
 import { Logo } from "../components/Logo";
 import { Project } from "../types/projects";
 
-export function LoginPage() {
+export function SignupPage() {
     const navigate = useNavigate();
 
-    const [user, setUser] = useState("");
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
 
     useEffect(() => {
-        const user = localStorage.getItem("USER");
-        if (user) {
-            navigate("/");
-        }
+      const app_user = localStorage.getItem("USER");
+      if (app_user) {
+          navigate("/");
+      }
     }, []);
+
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
-        const loginUser = await logInWithEmailAndPassword(user, password);
-        if (loginUser) {
-            const email = loginUser[0].replace(/["']/g, "");
+        const createUser = await registerWithEmailAndPassword(username, email, password);
+        console.log(createUser);
+        if (createUser) {
+            console.log(createUser);
             localStorage.setItem("USER", email);
             navigate("/");
-            console.log(loginUser);
         } else {
-            setError("Invalid credentials");
+            setError("Unable to create account");
             event.target.reset();
         }
     };
-
-    const onButton = async(event: any) => {
-        event.preventDefault();
-        const data = await getUserDataFromEmail();
-        console.log(data);
-    }
 
     return (
         <Stack
@@ -58,9 +54,8 @@ export function LoginPage() {
         >
             <Paper elevation={5} style={{ padding: "50px" }}>
                 <Stack spacing={3}>
-                    <Logo size="md" />
-                    <Button onClick={onButton}>Button</Button>
-                    <Typography fontWeight={600} fontSize={18}>Log in</Typography>
+                    <Logo size="sm" />
+                    <Typography fontWeight={600} fontSize={18}>Create an Account</Typography>
                     <form onSubmit={handleSubmit}>
                         <Grid container direction="column" spacing={2}>
                             <Grid item>
@@ -71,7 +66,21 @@ export function LoginPage() {
                                     name="username"
                                     variant="outlined"
                                     onChange={(event) =>
-                                        setUser(event.target.value)
+                                        setUsername(event.target.value)
+                                    }
+                                    required
+                                    autoFocus
+                                />
+                            </Grid>
+                            <Grid item>
+                                <TextField
+                                    type="email"
+                                    placeholder="Email"
+                                    fullWidth
+                                    name="email"
+                                    variant="outlined"
+                                    onChange={(event) =>
+                                        setEmail(event.target.value)
                                     }
                                     required
                                     autoFocus
@@ -105,7 +114,7 @@ export function LoginPage() {
                     </form>
                     {error && <Typography color="red">{error}</Typography>}
                     <Box>
-                        <Typography>New user ? <Link to={"/signup"}>Create an Account</Link></Typography>
+                        <Typography>Already have an account ? <Link to={"/login"}>Log in</Link></Typography>
                     </Box>
                 </Stack>
             </Paper>

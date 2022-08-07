@@ -4,14 +4,31 @@ import "./App.css";
 import { Dashboard } from "./navigation/Dashboard";
 import { LoginPage } from "./navigation/LoginPage";
 import { ProjectPage } from "./navigation/ProjectPage";
+import { SignupPage } from "./navigation/SignupPage";
+
+import { loggedIn, firebaseObserver, getUser } from "../src/api/firebase";
+import { useEffect, useState } from "react";
 
 function App() {
-    return (
+
+    const [authenticated, setAuthenticated] = useState(loggedIn());
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        firebaseObserver.subscribe('authStateChanged', (data: boolean | ((prevState: boolean) => boolean)) => {
+            setAuthenticated(data);
+        });
+        setIsLoading(false);
+        return () => { firebaseObserver.unsubscribe('authStateChanged'); }
+    }, []);
+
+    return isLoading ? <div /> : (
         <BrowserRouter>
             <Routes>
                 <Route path="/login" element={<LoginPage />} />
-                <Route path="/project" element={<ProjectPage />} />
-                <Route path="/" element={<Dashboard />} />
+                <Route path="/signup" element={<SignupPage />} />
+                <Route path="/project" element={authenticated && <ProjectPage />} />
+                <Route path="/" element={authenticated && <Dashboard />} />
                 <Route
                     path="*"
                     element={

@@ -120,8 +120,7 @@ async function addTask(
     refresh: Function,
     title: String
 ) {
-    const email = localStorage.getItem("USER");
-    const allProjects = await getUserDataFromEmail(email);
+    const allProjects = await getUserDataFromEmail();
     if (!allProjects) {
         console.log("failied to get Projects");
         return;
@@ -140,6 +139,6 @@ async function addTask(
     allProjects[index] = project;
 
     console.log(allProjects);
-    updateUserProjects(email, allProjects);
+    updateUserProjects(allProjects);
     refresh((o: Boolean) => !o);
 }

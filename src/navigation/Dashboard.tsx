@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { handleOpenAIAPI } from "../api/openai";
 import { Logo } from "../components/Logo";
-import { getUserDataFromEmail, updateUserProjects } from "../api/firebase";
+import { checkUserExists, getUser, getUserDataFromEmail, updateUserProjects } from "../api/firebase";
 import { Project, Step } from "../types/projects";
 import { ProjectCard } from "../components/ProjectCard";
 
@@ -23,16 +23,19 @@ export function Dashboard() {
     const [loading, setLoading] = useState<boolean | null>();
     const [response, setResponse] = useState<string | undefined>(undefined);
     const [userData, setUserData] = useState<Project[]>();
-    const [userEmail, setUserEmail] = useState("");
 
     useEffect(() => {
         const user = localStorage.getItem("USER");
         if (!user) {
-            navigate("/login");
+            const user = getUser();
+            if(user){
+                localStorage.setItem("USER", user);
+            }else{
+                navigate("/login");
+            }
         } else {
-            setUserEmail(user);
             setLoading(true);
-            getUserDataFromEmail(user).then((data) => {
+            getUserDataFromEmail().then((data) => {
                 setLoading(false);
                 console.log("USER DATA", data);
                 setUserData(data);
@@ -62,7 +65,7 @@ export function Dashboard() {
                         steps,
                     },
                 ]);
-                updateUserProjects(userEmail, [
+                updateUserProjects( [
                     ...userData,
                     {
                         title: prevPrompt,
@@ -78,7 +81,7 @@ export function Dashboard() {
                         steps,
                     },
                 ]);
-                updateUserProjects(userEmail, [
+                updateUserProjects( [
                     {
                         title: prevPrompt,
                         description: "",
@@ -87,7 +90,13 @@ export function Dashboard() {
                 ]);
             }
         }
-    }, [prevPrompt, response, userEmail]);
+    }, [prevPrompt, response]);
+
+    const onButton = async (event: any) => {
+        event.preventDefault();
+        const data = await getUserDataFromEmail();
+        console.log(data);
+    }
 
     return (
         <Stack
@@ -99,7 +108,7 @@ export function Dashboard() {
             spacing={4}
         >
             <Logo size="lg" />
-
+            <Button onClick={onButton}>Button</Button>
             <TextField
                 value={prompt}
                 style={{

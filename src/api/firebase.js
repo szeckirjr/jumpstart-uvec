@@ -1,36 +1,9 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import {
-    GoogleAuthProvider,
-    getAuth,
-    signInWithPopup,
-    signInWithEmailAndPassword,
-    createUserWithEmailAndPassword,
-    sendPasswordResetEmail,
-    signOut,
-} from "firebase/auth";
 // import { useFirestoreQuery } from "react-query-firebase/firestore";
-import {
-    getFirestore,
-    query,
-    collection,
-    limit,
-    addDoc,
-    where,
-    orderBy,
-    onSnapshot,
-    QuerySnapshot,
-    doc,
-    DocumentData,
-    getDoc,
-    setDoc,
-    updateDoc,
-} from "firebase/firestore";
-import "firebase/auth";
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
-
+import 'firebase/auth';
+import firebase from "firebase/app";
+import "firebase/firestore";
+import ReactObserver from 'react-event-observer';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -47,16 +20,33 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+const app = firebase.initializeApp(firebaseConfig);
 
-const auth = getAuth(app);
-const db = getFirestore(app);
+const auth = firebase.auth(app);
+
+const db = firebase.firestore();
+
+export const firebaseObserver = ReactObserver();
+
+auth.onAuthStateChanged(function(user) {
+    firebaseObserver.publish("authStateChanged", loggedIn())
+});
+
+export function getUser(){
+    return auth.currentUser.email;
+}
+
+export function loggedIn() {
+    return !!auth.currentUser;
+}
 
 export const logInWithEmailAndPassword = async (email, password) => {
     try {
-        const signInuser = await signInWithEmailAndPassword(auth, email, password)
-        return signInuser;
+        const signInuser = await auth.signInWithEmailAndPassword(email, password)
+        if (signInuser) {
+            const user = signInuser.user.email;
+            return user;
+        }
 
     } catch (err) {
         console.error(err);
@@ -64,46 +54,126 @@ export const logInWithEmailAndPassword = async (email, password) => {
     }
 };
 
+// handle incoming request.
+export const request = async () => {
+    //determine token validity unless login request.
+    //return unauthorized except return response.
+}
+
+export const checkUserExists = async () => {
+    const user = auth.currentUser;
+    if (user != null) {
+        return true;
+    }
+    return false;
+}
+
 export const registerWithEmailAndPassword = async (name, email, password) => {
     try {
-        const res = await createUserWithEmailAndPassword(auth, email, password);
+        const res = await auth.createUserWithEmailAndPassword(email, password);
         const user = res.user;
-        addDoc(collection(db, "users"), {
+        const result = await db.collection("users").doc(user.uid).set({
             uid: user.uid,
             name,
             authProvider: "local",
             email,
         }).then(function () {
+            console.log("User added with ID: ") // never fires
             return true;
+        }).catch(function (error) {
+            console.error(error) // never fires
+            return false;
         });
+        return result;
     } catch (err) {
         console.error(err);
         return false;
     }
 };
 
-export const getUserDataFromEmail = async (email) => {
+//return user projects with email
+export const getUserDataFromEmail = async () => {
 
-    const myDocRef = doc(db, "users", email);
-    const myDoc = await getDoc(myDocRef);
-    if (myDoc.exists()) {
-        return(myDoc.data().projects);
-    } else {
-        return false;
-    }
+    const user_uid = auth.currentUser.uid;
+    let userProjects = [];
+   
+    await db.collection("users").doc(user_uid).collection("projects").get().then(async function (querySnapshot) {
+        querySnapshot.docs.forEach((doc) => {
+            userProjects.push(doc.data());
+        })
+    });
+
+    return userProjects;
 }
+
+/**
+ * Add multiple steps to a project.
+ * 
+ * @param {*} user 
+ * @param {*} projectID 
+ * @param {*} step 
+ */
+export const createProjectMultiSteps = async (user, projectID, steps = []) => {
+
+    // const stepsQuery = collection(firebase.firestore(), "projects", projectID, "steps");
+    // const projectRef = doc(firebase.firestore(), "projects", projectID);
+
+    // setDoc(projectRef, { "userID": user });
+
+    // // steps.forEach(step => {
+    // //     setDoc(stepsQuery, step);
+    // // });
+
+    return true;
+
+}
+
+
+/**
+ * Add multiple tasks to a step.
+ * 
+ * @param {*} user 
+ * @param {*} projectID 
+ * @param {*} stepID 
+ * @param {*} task 
+ */
+export const addStepMultiTasks = async (user, projectID, stepID, task = []) => {
+
+}
+
+
 
 export const updateUserProjects = async (email, projectsData) => {
 
-    const myDocRef = doc(db, "users", email);
-    const setData = await updateDoc(myDocRef,{
-        projects: projectsData
-    });
-    console.log(setData);
+    // const q = query(collection(firebase.firestore(), "users"), where("email", "==", email));
+    // const querySnapshot = await getDocs(q);
+
+    // if (!querySnapshot || querySnapshot.size > 1 || querySnapshot.size == 0) {
+    //     return false;
+    // }
+
+    // querySnapshot.forEach((doc) => {
+    //     const docID = doc.id;
+    // })
+
+    // const collectionRef = collection(firebase.firestore(), "users", "projects");
+
+    // projectsData.forEach(async(project) => {
+    //    await setDoc(collectionRef, {
+    //         description: project.description,
+    //         title: project.title,
+    //     })
+    // });
+
+
+    return true;
+
 }
 
 
 export const logout = () => {
-    signOut(auth);
+    auth.signOut();
 
 };
+
+export { auth }

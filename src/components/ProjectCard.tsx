@@ -61,20 +61,20 @@ function getNextTask(project: Project) {
     const uncompletedSteps = project.steps.filter((step) => !step.isCompleted);
     // console.log("UNDONE", uncompletedSteps);
     var task = undefined;
-    uncompletedSteps.forEach((step) => {
-        console.log(
-            "WHAT",
-            step.tasks.some((task) => !task.isCompleted)
-        );
-        if (step.tasks.some((task) => !task.isCompleted)) {
-            console.log(
-                "YEP!!",
-                step.tasks.find((task) => !task.isCompleted)?.title
-            );
-            task = step.tasks.find((task) => !task.isCompleted)?.title;
-            // return step.tasks.find((task) => !task.isCompleted)?.title;
-        }
-    });
+    // uncompletedSteps.forEach((step) => {
+    //     console.log(
+    //         "WHAT",
+    //         step.tasks.some((task) => !task.isCompleted)
+    //     );
+    //     if (step.tasks.some((task) => !task.isCompleted)) {
+    //         console.log(
+    //             "YEP!!",
+    //             step.tasks.find((task) => !task.isCompleted)?.title
+    //         );
+    //         task = step.tasks.find((task) => !task.isCompleted)?.title;
+    //         // return step.tasks.find((task) => !task.isCompleted)?.title;
+    //     }
+    // });
     return task ?? "No tasks left";
     // return uncompletedSteps[0].tasks.filter((task) => !task.isCompleted)[0].title;
 }
