@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { handleOpenAIAPI } from "../api/openai";
 import { Logo } from "../components/Logo";
-import { checkUserExists, getUser, getUserDataFromEmail, updateUserProjects } from "../api/firebase";
+import { checkUserExists, getProjectSteps, getStepTasks, getUser, getUserDataFromEmail, updateUserProjects } from "../api/firebase";
 import { Project, Step } from "../types/projects";
 import { ProjectCard } from "../components/ProjectCard";
 
@@ -92,12 +92,6 @@ export function Dashboard() {
         }
     }, [prevPrompt, response]);
 
-    const onButton = async (event: any) => {
-        event.preventDefault();
-        const data = await getUserDataFromEmail();
-        console.log(data);
-    }
-
     return (
         <Stack
             py={3}
@@ -108,7 +102,6 @@ export function Dashboard() {
             spacing={4}
         >
             <Logo size="lg" />
-            <Button onClick={onButton}>Button</Button>
             <TextField
                 value={prompt}
                 style={{

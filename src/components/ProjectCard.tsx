@@ -58,7 +58,7 @@ export function ProjectCard({ project }: { project: Project }) {
 }
 
 function getNextTask(project: Project) {
-    const uncompletedSteps = project.steps.filter((step) => !step.isCompleted);
+    // const uncompletedSteps = project.steps.filter((step) => !step.isCompleted);
     // console.log("UNDONE", uncompletedSteps);
     var task = undefined;
     // uncompletedSteps.forEach((step) => {

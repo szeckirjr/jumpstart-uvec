@@ -41,12 +41,6 @@ export function LoginPage() {
         }
     };
 
-    const onButton = async(event: any) => {
-        event.preventDefault();
-        const data = await getUserDataFromEmail();
-        console.log(data);
-    }
-
     return (
         <Stack
             width="100%"
@@ -59,7 +53,6 @@ export function LoginPage() {
             <Paper elevation={5} style={{ padding: "50px" }}>
                 <Stack spacing={3}>
                     <Logo size="md" />
-                    <Button onClick={onButton}>Button</Button>
                     <Typography fontWeight={600} fontSize={18}>Log in</Typography>
                     <form onSubmit={handleSubmit}>
                         <Grid container direction="column" spacing={2}>

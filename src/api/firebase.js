@@ -28,11 +28,11 @@ const db = firebase.firestore();
 
 export const firebaseObserver = ReactObserver();
 
-auth.onAuthStateChanged(function(user) {
+auth.onAuthStateChanged(function (user) {
     firebaseObserver.publish("authStateChanged", loggedIn())
 });
 
-export function getUser(){
+export function getUser() {
     return auth.currentUser.email;
 }
 
@@ -96,7 +96,7 @@ export const getUserDataFromEmail = async () => {
 
     const user_uid = auth.currentUser.uid;
     let userProjects = [];
-   
+
     await db.collection("users").doc(user_uid).collection("projects").get().then(async function (querySnapshot) {
         querySnapshot.docs.forEach((doc) => {
             userProjects.push(doc.data());
@@ -113,11 +113,20 @@ export const getUserDataFromEmail = async () => {
  * @param {*} projectID 
  * @param {*} step 
  */
-export const createProjectMultiSteps = async (user, projectID, steps = []) => {
+export const createProjectMultiSteps = async (projectID, steps = []) => {
 
     // const stepsQuery = collection(firebase.firestore(), "projects", projectID, "steps");
     // const projectRef = doc(firebase.firestore(), "projects", projectID);
-
+    try {
+        Promise.all(
+            steps.forEach(step => {
+                addStepstoProject(projectID, step);
+            })
+        );
+    } catch (e) {
+        console.debug('Error while trying to add multiple steps to project');
+        console.debug(e);
+    }
     // setDoc(projectRef, { "userID": user });
 
     // // steps.forEach(step => {
@@ -127,6 +136,141 @@ export const createProjectMultiSteps = async (user, projectID, steps = []) => {
     return true;
 
 }
+
+export const addStepstoProject = async (projectID, step = {}) => {
+
+    // const stepsQuery = collection(firebase.firestore(), "projects", projectID, "steps");
+    // const projectRef = doc(firebase.firestore(), "projects", projectID);
+    const user_uid = auth.currentUser.uid;
+    if (!step.description || !step.title || !step.id) {
+        console.log("Error adding step: Missing paramters");
+        return false;
+    }
+
+    try {
+        await db.collection('users').doc(user_uid).collection("projects").doc(projectID).collection("steps").add(step);
+    } catch (e) {
+        console.debug('Error while trying to add a step to project');
+        console.debug(e);
+    }
+
+    return true;
+
+}
+
+//R
+export const getProjectSteps = async (projectID) => {
+    const user_uid = auth.currentUser.uid;
+    if (!projectID) {
+        return false;
+    }
+
+    try {
+        const rawSteps = await db.collection('users').doc(user_uid).collection("projects").doc(projectID).collection('steps').get();
+        if (rawSteps.docs.length > 0) {
+            const steps = rawSteps.docs.map((doc) => {
+                const data = doc.data();
+                const title = doc.title;
+                const id = doc.id;
+                const isCompleted = doc.isCompleted;
+                return {
+                    id,
+                    title,
+                    isCompleted,
+                    ...data,
+                };
+            });
+            return steps;
+        } else {
+            return [];
+        }
+    } catch (e) {
+        console.debug('Error while trying to add a step to project');
+        console.debug(e);
+        return [];
+    }
+
+}
+
+
+// export const getStepTasks
+export const getStepTasks = async (projectID, stepID) => {
+    const user_uid = auth.currentUser.uid;
+
+    if (!projectID) {
+        return [];
+    }
+
+    try {
+
+        const stepSnapshot = await db.collection('users')
+            .doc(user_uid)
+            .collection('projects')
+            .doc(projectID)
+            .collection('steps')
+            .where('step_id', '==', stepID)
+            .get();
+
+        //ensure that length is 1.
+        if (stepSnapshot.size !== 1) {
+            console.log('More than 1 documents found for this step ID');
+            return [];
+        }
+
+        const stepRef = stepSnapshot.docs[0].ref;
+
+        const taskData = await stepRef.collection('tasks').get().then((taskSnapshot) => {
+            const tasks = taskSnapshot.docs.map((task) => {
+                return task.data();
+            })
+            return tasks;
+        });
+
+        return taskData;
+    }
+    catch (e) {
+        console.log('Error while trying to get tasks from project');
+        console.log(e);
+        return [];
+    }
+
+}
+
+// export const getProjects
+
+//C, U
+export const createProject = async (projectData) => {
+
+    const user_uid = auth.currentUser.uid;
+    if (!projectData.description || !projectData.title || !projectData.id) {
+        console.log("Error adding step: Missing parameters");
+        return false;
+    }
+
+    try {
+        await db.collection('users').doc(user_uid).collection("projects").add({
+            'description': projectData.description,
+            'title': projectData.title
+        });
+    } catch (e) {
+        console.debug('Error while trying to add a step to project');
+        console.debug(e);
+    }
+
+    return true;
+
+}
+
+// export const updateStepsforProject
+
+// export const updateTasksforStep
+
+// //D
+// export const removeProject
+
+// export const removeStepfromProject
+
+// export const removeTaskfromStep
 
 
 /**
